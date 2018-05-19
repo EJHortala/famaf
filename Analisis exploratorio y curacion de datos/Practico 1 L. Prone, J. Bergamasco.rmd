@@ -1,0 +1,65 @@
+
+# Practico 1: Entregar un Rmd donde se encuentren todos los vuelos que:
+### Que arribaron con un retraso de mas de dos horas.
+### Volaron hacia Houston (IAH o HOU)
+### Fueron operados por United, American o Delta.
+### Salieron en Verano (Julio, Agosto y Septiembre)
+### Arrivaron mas de dos horas tarde, pero salieron bien.
+### Salieron entre medianoche y las 6 am.
+
+Importación de libreria y previsualización de dataset
+
+```{r}
+library(nycflights13)
+fligths <- nycflights13::flights
+str(fligths)
+```
+```{r}
+summary(fligths)
+```
+
+```{r}
+head(fligths)
+```
+
+Que arribaron con un retraso de mas de dos horas.
+
+```{r}
+filtered_flights <- subset(flights, arr_delay > 120)
+filtered_flights
+```
+
+Volaron hacia Houston (IAH o HOU)
+
+```{r}
+filtered_flights <- subset(flights, origin == "IAH" | dest =="HOU")
+filtered_flights
+```
+
+Fueron operados por United, American o Delta.
+
+```{r}
+filtered_flights <- subset(flights, carrier == "UA" | carrier == "AA" | carrier == "DL")
+filtered_flights
+```
+
+Salieron en Verano (Julio, Agosto y Septiembre)
+
+```{r}
+filtered_flights <- subset(flights, month >= 7 & month <= 9)
+filtered_flights
+```
+
+Arrivaron mas de dos horas tarde, pero salieron bien.
+
+```{r}
+filtered_flights <- subset(flights, dep_delay <= 0 & arr_delay > 120)
+filtered_flights
+```
+
+Salieron entre medianoche y las 6 am.
+
+```{r}
+filtered_flights <- subset(flights, dep_time > 0 & dep_time < 600)
+filtered_flights
+```

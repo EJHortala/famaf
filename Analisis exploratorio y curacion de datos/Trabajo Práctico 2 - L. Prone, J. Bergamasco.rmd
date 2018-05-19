@@ -1,0 +1,125 @@
+---
+title: "Trabajo Práctico 2"
+author: "Prone, Lucas y Bergamasco, Julieta"
+date: "May 17, 2018"
+output: html_notebook
+---
+
+-------------
+
+#Elección del Dataset
+
+Para este trabajo práctico elegimos el siguiente dataset, obtenido de la base de datos del World Bank:
+
+```{r}
+#WBData <- read.csv(file="WDIData.csv", header=TRUE, sep=",", quote = "\"")
+WBData <- read.csv(file="filtered_WBData.csv", header=TRUE, sep=",", quote = "\"")
+
+#WBData
+```
+
+La categoría que queremos predecir la obtenemos del siguiente Dataset, que clasifica a los distintos países según sus niveles de ingreso:
+
+```{r}
+WBDataCountry <- read.csv(file="WDICountry.csv", header=TRUE, sep=",", quote = "\"")
+```
+
+Exploramos el dataset:
+
+```{r echo=TRUE}
+names(WBData)
+str(WBData)
+dim(WBData)
+```
+
+```{r}
+names(WBData)[1]<-paste("Country.Name")
+
+indicators <- paste(WBData$Indicator.Name,WBData$Indicator.Code,sep = " - ")
+indicator_list <- unique(indicators, incomparables = FALSE)
+write.csv(indicator_list, "indicator_list.csv", row.names = FALSE)
+```
+
+
+```{r echo=TRUE}
+names(WBDataCountry)
+str(WBDataCountry)
+dim(WBDataCountry)
+
+unique(WBDataCountry$Income.Group, incomparables = FALSE)
+```
+
+```{r}
+names(WBDataCountry)[1]
+colnames(WBDataCountry)[which(names(WBDataCountry) == "ï..Country.Code")] <- "Country.Code"
+names(WBDataCountry)[1]
+```
+
+
+```{r}
+#Seleccion de features
+
+condition <- WBData$Indicator.Code == "EG.CFT.ACCS.ZS" | WBData$Indicator.Code == "EG.ELC.ACCS.ZS" | WBData$Indicator.Code == "EG.ELC.ACCS.RU.ZS" | WBData$Indicator.Code == "EG.ELC.ACCS.UR.ZS" | WBData$Indicator.Code == "per_si_allsi.adq_pop_tot" | WBData$Indicator.Code == "per_allsp.adq_pop_tot" | WBData$Indicator.Code == "per_sa_allsa.adq_pop_tot" | WBData$Indicator.Code == "per_lm_alllm.adq_pop_tot" | WBData$Indicator.Code == "SI.POV.GINI"
+            
+# no tienen valores 			
+# | WBData$Indicator.Code == "SH.XPD.GHED.PC.CD" | WBData$Indicator.Code == "EG.USE.COMM.CL.ZS" |   #WBData$Indicator.Code == "EG.FEC.RNEW.ZS"
+
+filtered_WBData <- subset(WBData, condition)
+
+head(filtered_WBData, n = 5)
+
+
+
+```
+
+
+
+```{r}
+library(reshape)
+# Transposicion de datos (features a columnas)
+temp <- filtered_WBData[, (colnames(filtered_WBData) %in% c("Country.Name","Country.Code","Indicator.Name","Indicator.Code","X2016"))]
+
+write.csv(temp, "filtered_WBData.csv", row.names = FALSE)
+
+head(temp,n = 5)
+final_data <- cast(temp, Country.Name ~ Indicator.Code)
+
+#Random
+head(final_data[sample(nrow(final_data)),],n=5)
+
+
+```
+
+
+
+
+Seleccionamos la clasificación que nos interesa del país:
+
+```{r}
+myvars <- c("Country.Code", "Income.Group")
+WBDataCountryNw <- WBDataCountry[myvars]
+head(WBDataCountryNw,n = 5)
+
+filtered_WBDataCountryNw <- WBDataCountryNw[!(!is.na(WBDataCountryNw$Income.Group) & WBDataCountryNw$Income.Group==""), ]
+head(filtered_WBDataCountryNw,n = 5)
+```
+
+Hacemos un Unpivot a los años:
+
+```{r}
+WBDataUnpiv <- melt(WBData)
+filtered_WBDataUnpiv <- na.omit(WBDataUnpiv)
+```
+
+```{r}
+final_database <- merge(x = filtered_WBDataUnpiv, filtered_WBDataCountryNw, by = "Country.Code", all.x = TRUE)
+head(final_database,n = 50)
+```
+
+
+
+
+
+
+
+
