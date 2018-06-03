@@ -1,4 +1,9 @@
-
+---
+title: "Trabajo Pr�ctico 1"
+author: "Prone, Lucas y Bergamasco, Julieta"
+date: "May 17, 2018"
+output: html_notebook
+---
 # Practico 1: Entregar un Rmd donde se encuentren todos los vuelos que:
 ### Que arribaron con un retraso de mas de dos horas.
 ### Volaron hacia Houston (IAH o HOU)
@@ -7,9 +12,10 @@
 ### Arrivaron mas de dos horas tarde, pero salieron bien.
 ### Salieron entre medianoche y las 6 am.
 
-Importación de libreria y previsualización de dataset
+Importacion de libreria y previsualizacion de dataset
 
 ```{r}
+install.packages("nycflights13")
 library(nycflights13)
 fligths <- nycflights13::flights
 str(fligths)
