@@ -10,7 +10,7 @@ output: html_notebook
 Para este trabajo práctico elegimos el siguiente dataset, obtenido de la base de datos del World Bank:
 
 ```{r}
-WBData <- read.csv(file="WDIData.csv", header=TRUE, sep=",", quote = "\"")
+WBData <- read.csv(file="https://github.com/sac2087/famaf/blob/master/Analisis%20exploratorio%20y%20curacion%20de%20datos/WDIData.csv?raw=true", header=TRUE, sep=",", quote = "\"")
 
 head(WBData, n = 1)
 
